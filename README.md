@@ -92,6 +92,8 @@ To use this action in your workflow, add the following step:
 | `resource_group` | Azure resource group name | No | - | `my-resource-group` |
 | `subscription` | Azure subscription id | No | - | `subscription-id` |
 | `falcon_image_platform` | Specify image architecture when using the image pulled by the action | No | `x86_64` | `x86_64`, `aarch64` |
+| `retry_max_attempts` | Number of attempts when downloading the pull script or pulling the sensor image, used to ride out transient network failures | No | `3` | `5` |
+| `retry_delay_seconds` | Seconds to wait between retry attempts | No | `5` | `10` |
 
 ## Examples
 
