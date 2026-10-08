@@ -40,15 +40,34 @@ This limitation applies to any registry that uses credential helpers rather than
 
 ## Multi-Architecture Support
 
-Recent versions of the Falcon Container Sensor are published as multi-architecture images supporting both x86_64 and ARM64 platforms. This action defaults to pulling the x86_64 image to maintain compatibility with existing workflows.
+Recent versions of the Falcon Container Sensor are published as multi-architecture images supporting both x86_64 and ARM64 platforms. The action works on x86_64 and ARM64 runners and can patch images for either platform, including cross-architecture (for example, `linux/amd64` images on an ARM64 runner or an Apple Silicon machine).
 
-For ARM-based deployments (AWS Graviton, Apple Silicon, ARM Kubernetes nodes), specify the ARM architecture:
+By default, the action detects the platform to patch from the source image:
+
+- A single-platform source image is patched for its platform.
+- A multi-platform source image is patched for the runner's platform, the same way `docker pull` picks one.
+
+To choose the platform explicitly, set `falcon_image_platform` to the platform of the image you are patching (not the platform of the runner):
 
 ```yaml
 falcon_image_platform: 'aarch64'
 ```
 
-For Intel-based deployments (default), no changes are required to existing workflows.
+The action then:
+
+- Runs falconutil for the runner's architecture, so no emulation is needed on the runner.
+- Pins multi-architecture Falcon Container Sensor images, including one set with `falcon_image_uri`, to the digest of the target platform.
+- Passes `--platform` to falconutil, so the source and Falcon images are pulled for the target platform.
+
+To read image manifests, the action uses `docker buildx imagetools` when available and falls back to `docker manifest inspect`. Detecting the platform of a source image that is not present on the runner requires access to its registry, so log in to that registry before running the action.
+
+falconutil builds the patched image for the target platform, so patching for a platform other than the runner's requires emulation on the runner. GitHub-hosted runners don't have it by default; set it up before this action:
+
+```yaml
+- uses: docker/setup-qemu-action@v3
+```
+
+Without emulation, the action fails before patching with an error that explains this.
 
 ## Usage
 
@@ -91,7 +110,7 @@ To use this action in your workflow, add the following step:
 | `image_pull_policy` | PullPolicy for Source and Falcon Container Sensor Image | No | `Always` | Allowed values: `IfNotPresent, Always` |
 | `resource_group` | Azure resource group name | No | - | `my-resource-group` |
 | `subscription` | Azure subscription id | No | - | `subscription-id` |
-| `falcon_image_platform` | Specify image architecture when using the image pulled by the action | No | `x86_64` | `x86_64`, `aarch64` |
+| `falcon_image_platform` | Platform of the image to patch (*defaults to the platform detected from the source image*) | No | - | `x86_64`, `aarch64` |
 
 ## Examples
 

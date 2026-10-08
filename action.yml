@@ -30,9 +30,8 @@ inputs:
     description: 'Falcon Container Sensor Image URI (optional - defaults to using the image pulled by the action)'
     required: false
   falcon_image_platform:
-    description: 'Specify sensor platform to retrieve when pulling from CrowdStrike repository'
+    description: 'Platform of the image to patch. Allowed values: x86_64 | aarch64 (defaults to the platform detected from the source image)'
     required: false
-    default: x86_64
   cloud_service:
     description: 'Cloud Service platform. Allowed values: ACA | ACI | ECS_FARGATE | CLOUDRUN'
     required: false
@@ -68,7 +67,9 @@ runs:
         INPUT_FALCON_REGION: ${{ inputs.falcon_region }}
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_FALCON_IMAGE_PLATFORM: ${{ inputs.falcon_image_platform }}
-
+        INPUT_FALCON_IMAGE_URI: ${{ inputs.falcon_image_uri }}
+        INPUT_IMAGE_PULL_POLICY: ${{ inputs.image_pull_policy }}
+        INPUT_SOURCE_IMAGE_URI: ${{ inputs.source_image_uri }}
     - name: Run Falconutil patch-image
       id: falconutil-run
       run: $GITHUB_ACTION_PATH/falconutil-run.sh
@@ -79,10 +80,11 @@ runs:
         INPUT_CLOUD_SERVICE: ${{ inputs.cloud_service }}
         INPUT_CONTAINER: ${{ inputs.container }}
         INPUT_CONTAINER_GROUP: ${{ inputs.container_group }}
-        INPUT_FALCON_IMAGE_URI: ${{ inputs.falcon_image_uri || steps.falconutil-pull.outputs.FALCON_IMAGE_URI }}
+        INPUT_FALCON_IMAGE_URI: ${{ steps.falconutil-pull.outputs.FALCON_IMAGE_URI }}
         INPUT_FALCONCTL_OPTS: ${{ inputs.falconctl_opts }}
         INPUT_IMAGE_PULL_POLICY: ${{ inputs.image_pull_policy }}
+        INPUT_PLATFORM: ${{ steps.falconutil-pull.outputs.FALCON_IMAGE_PLATFORM }}
         INPUT_RESOURCE_GROUP: ${{ inputs.resource_group }}
-        INPUT_SOURCE_IMAGE_URI: ${{ inputs.source_image_uri }}
+        INPUT_SOURCE_IMAGE_URI: ${{ steps.falconutil-pull.outputs.SOURCE_IMAGE_URI }}
         INPUT_SUBSCRIPTION: ${{ inputs.subscription }}
         INPUT_TARGET_IMAGE_URI: ${{ inputs.target_image_uri }}
