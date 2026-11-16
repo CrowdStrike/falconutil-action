@@ -33,6 +33,14 @@ inputs:
     description: 'Specify sensor platform to retrieve when pulling from CrowdStrike repository'
     required: false
     default: x86_64
+  retry_max_attempts:
+    description: 'Number of attempts when downloading the pull script or pulling the sensor image, used to ride out transient network failures'
+    required: false
+    default: '3'
+  retry_delay_seconds:
+    description: 'Seconds to wait between retry attempts'
+    required: false
+    default: '5'
   cloud_service:
     description: 'Cloud Service platform. Allowed values: ACA | ACI | ECS_FARGATE | CLOUDRUN'
     required: false
@@ -68,6 +76,8 @@ runs:
         INPUT_FALCON_REGION: ${{ inputs.falcon_region }}
         INPUT_VERSION: ${{ inputs.version }}
         INPUT_FALCON_IMAGE_PLATFORM: ${{ inputs.falcon_image_platform }}
+        INPUT_RETRY_MAX_ATTEMPTS: ${{ inputs.retry_max_attempts }}
+        INPUT_RETRY_DELAY_SECONDS: ${{ inputs.retry_delay_seconds }}
 
     - name: Run Falconutil patch-image
       id: falconutil-run
