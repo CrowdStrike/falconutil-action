@@ -50,7 +50,7 @@ validate_required_inputs() {
 validate_required_inputs
 
 # Download the falcon-container-sensor-pull.sh script
-retry curl -fsSL -O https://raw.githubusercontent.com/CrowdStrike/falcon-scripts/main/bash/containers/falcon-container-sensor-pull/falcon-container-sensor-pull.sh
+retry curl -fsSL -O https://raw.githubusercontent.com/CrowdStrike/falcon-scripts/main/bash/containers/falcon-container-sensor-pull/falcon-container-sensor-pull.sh || exit 1
 
 # Check if the version is provided
 VERSION=${INPUT_VERSION:+"--version ${INPUT_VERSION}"}
