@@ -51,6 +51,7 @@ execute_falconutil_patch() {
     [[ -n "${INPUT_CONTAINER_GROUP:-}" ]] && cmd_args+=("--container-group=${INPUT_CONTAINER_GROUP}")
     [[ -n "${INPUT_FALCONCTL_OPTS:-}" ]] && cmd_args+=("--falconctl-opts=${INPUT_FALCONCTL_OPTS}")
     [[ -n "${INPUT_IMAGE_PULL_POLICY:-}" ]] && cmd_args+=("--image-pull-policy=${INPUT_IMAGE_PULL_POLICY}")
+    [[ -n "${INPUT_PLATFORM:-}" ]] && cmd_args+=("--platform=${INPUT_PLATFORM}")
     [[ -n "${INPUT_RESOURCE_GROUP:-}" ]] && cmd_args+=("--resource-group=${INPUT_RESOURCE_GROUP}")
     [[ -n "${INPUT_SUBSCRIPTION:-}" ]] && cmd_args+=("--subscription=${INPUT_SUBSCRIPTION}")
 

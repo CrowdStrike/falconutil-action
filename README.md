@@ -40,15 +40,18 @@ This limitation applies to any registry that uses credential helpers rather than
 
 ## Multi-Architecture Support
 
-Recent versions of the Falcon Container Sensor are published as multi-architecture images supporting both x86_64 and ARM64 platforms. This action defaults to pulling the x86_64 image to maintain compatibility with existing workflows.
+Recent versions of the Falcon Container Sensor are published as multi-architecture images supporting both x86_64 and ARM64 platforms. The action works on x86_64 and ARM64 runners, and it patches the source image for its own platform:
 
-For ARM-based deployments (AWS Graviton, Apple Silicon, ARM Kubernetes nodes), specify the ARM architecture:
+- A single-platform source image is patched for its platform, including cross-architecture (for example, a `linux/amd64` image on an ARM64 runner).
+- A multi-platform source image is patched for the runner's platform, the same way `docker pull` picks one.
+
+The action pulls the Falcon Container Sensor for the runner's architecture, so the `falcon_image_platform` input is no longer needed. It is kept so existing workflows don't break, but it has no effect.
+
+falconutil builds the patched image for the source image's platform. To patch an image for a platform other than the runner's, set up emulation on the runner before this action. GitHub-hosted runners don't have it by default:
 
 ```yaml
-falcon_image_platform: 'aarch64'
+- uses: docker/setup-qemu-action@v3
 ```
-
-For Intel-based deployments (default), no changes are required to existing workflows.
 
 ## Usage
 
@@ -91,7 +94,7 @@ To use this action in your workflow, add the following step:
 | `image_pull_policy` | PullPolicy for Source and Falcon Container Sensor Image | No | `Always` | Allowed values: `IfNotPresent, Always` |
 | `resource_group` | Azure resource group name | No | - | `my-resource-group` |
 | `subscription` | Azure subscription id | No | - | `subscription-id` |
-| `falcon_image_platform` | Specify image architecture when using the image pulled by the action | No | `x86_64` | `x86_64`, `aarch64` |
+| `falcon_image_platform` | Deprecated, has no effect (*see [Multi-Architecture Support](#multi-architecture-support)*) | No | `x86_64` | `x86_64`, `aarch64` |
 | `retry_max_attempts` | Number of attempts when downloading the pull script or pulling the sensor image, used to ride out transient network failures | No | `3` | `5` |
 | `retry_delay_seconds` | Seconds to wait between retry attempts | No | `5` | `10` |
 
