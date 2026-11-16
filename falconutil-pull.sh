@@ -100,7 +100,7 @@ detect_target_platform() {
 # locally to the runner's platform, so falconutil would read the wrong image.
 pin_to_target_platform() {
     local image="$1" digest repository
-    digest=$(image_platforms "$image" | awk -v platform="$TARGET_PLATFORM" 'NF == 2 && $1 == platform { print $2; exit }')
+    digest=$(image_platforms "$image" | awk -v platform="$TARGET_PLATFORM" 'NF == 2 && $1 == platform && !found { print $2; found = 1 }')
     if [[ -z "$digest" ]]; then
         echo "$image"
         return 0
