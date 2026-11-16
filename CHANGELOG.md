@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.2.0](https://github.com/CrowdStrike/falconutil-action/compare/v1.1.0...v1.2.0) (2026-11-16)
+
+
+### Features
+
+* retry pull script download and sensor image pull on transient failures ([#16](https://github.com/CrowdStrike/falconutil-action/issues/16)) ([2855268](https://github.com/CrowdStrike/falconutil-action/commit/28552687194aa4b04e1595586f44286d9a7fb8c6))
+
+
+### Bug Fixes
+
+* support arm64 runners and cross-architecture source images ([#17](https://github.com/CrowdStrike/falconutil-action/issues/17)) ([282d3b3](https://github.com/CrowdStrike/falconutil-action/commit/282d3b3332d8e68db24f129dc0b62972c1b60c2d))
+
 ## [1.1.0](https://github.com/CrowdStrike/falconutil-action/compare/v1.0.1...v1.1.0) (2025-08-06)
 
 
